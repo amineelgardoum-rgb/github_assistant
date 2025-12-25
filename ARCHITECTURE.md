@@ -103,11 +103,11 @@ subgraph Persistence["Persistence Layer"]
     ChromaDB["Chroma Vector DB<br/>(chroma_langchain_db/)"]
 end
 
-APIClient -->|"POST index-repo"| IndexEndpoint
+APIClient -->|"POST /load_repo"| IndexEndpoint
 IndexEndpoint --> RepoLoader
 EmbedGen -->|"Store vectors"| ChromaDB
 
-APIClient -->|"POST chat"| ChatEndpoint
+APIClient -->|"POST /ask"| ChatEndpoint
 ChatEndpoint --> QueryEmbed
 ChromaRetriever -.->|"Fetch"| ChromaDB
 ChromaRetriever --> PromptBuilder
