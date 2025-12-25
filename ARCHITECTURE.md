@@ -66,55 +66,52 @@ graph TB
 
 ```mermaid
 graph LR
-    subgraph Frontend["Frontend Layer"]
-        UI["UI Components\n(App.jsx, ChatPage)"]
-        APIClient["API Client\n(api.js)"]
-        UI <--> APIClient
-    end
 
-    subgraph Backend["Backend Layer (FastAPI)"]
-        Routes["Routes\n(main.py)"]
-        IndexEndpoint["POST /index-repo"]
-        ChatEndpoint["POST /chat"]
-        Routes --> IndexEndpoint
-        Routes --> ChatEndpoint
-    end
+APIClient["API Client<br/>(Frontend)"]
 
-    subgraph Indexing["Indexing Pipeline"]
-        RepoLoader["Repo Loader\n(loaders/repo_loader.py)"]
-        CodeChunker["Code Chunker\n(semantic split)"]
-        EmbedGen["Embedding Generator\n(embeddings/vector_store.py)"]
-        RepoLoader --> CodeChunker
-        CodeChunker --> EmbedGen
-    end
+subgraph Backend["Backend Layer (FastAPI)"]
+    Routes["Routes<br/>(main.py)"]
+    IndexEndpoint["POST /load_repo"]
+    ChatEndpoint["POST /ask"]
+    Routes --> IndexEndpoint
+    Routes --> ChatEndpoint
+end
 
-    subgraph Retrieval["Retrieval Pipeline"]
-        QueryEmbed["Query Embedder\n(same model)"]
-        ChromaRetriever["Chroma Retriever\n(similarity search)"]
-        QueryEmbed --> ChromaRetriever
-    end
+subgraph Indexing["Indexing Pipeline"]
+    RepoLoader["Repo Loader<br/>(loaders/repo_loader.py)"]
+    CodeChunker["Code Chunker<br/>(semantic split)"]
+    EmbedGen["Embedding Generator<br/>(embeddings/vector_store.py)"]
+    RepoLoader --> CodeChunker
+    CodeChunker --> EmbedGen
+end
 
-    subgraph Generation["Generation Pipeline"]
-        PromptBuilder["Prompt Builder\n(utils/retriever_utils.py)"]
-        RAGChain["RAG Chain\n(llm/llm_chain.py)"]
-        LLMCall["LLM API Call\n(Google Gemini)"]
-        PromptBuilder --> RAGChain
-        RAGChain --> LLMCall
-    end
+subgraph Retrieval["Retrieval Pipeline"]
+    QueryEmbed["Query Embedder<br/>(same model)"]
+    ChromaRetriever["Chroma Retriever<br/>(similarity search)"]
+    QueryEmbed --> ChromaRetriever
+end
 
-    subgraph Persistence["Persistence Layer"]
-        ChromaDB["Chroma Vector DB\n(chroma_langchain_db/)"]
-    end
+subgraph Generation["Generation Pipeline"]
+    PromptBuilder["Prompt Builder<br/>(utils/retriever_utils.py)"]
+    RAGChain["RAG Chain<br/>(llm/llm_chain.py)"]
+    LLMCall["LLM API Call<br/>(Google Gemini)"]
+    PromptBuilder --> RAGChain
+    RAGChain --> LLMCall
+end
 
-    APIClient -->|POST index-repo| IndexEndpoint
-    IndexEndpoint --> RepoLoader
-    EmbedGen -->|Store Vectors| ChromaDB
-  
-    APIClient -->|POST chat| ChatEndpoint
-    ChatEndpoint --> QueryEmbed
-    ChromaRetriever -.->|Fetch| ChromaDB
-    ChromaRetriever --> PromptBuilder
-    LLMCall -->|Response| RAGChain
+subgraph Persistence["Persistence Layer"]
+    ChromaDB["Chroma Vector DB<br/>(chroma_langchain_db/)"]
+end
+
+APIClient -->|"POST index-repo"| IndexEndpoint
+IndexEndpoint --> RepoLoader
+EmbedGen -->|"Store vectors"| ChromaDB
+
+APIClient -->|"POST chat"| ChatEndpoint
+ChatEndpoint --> QueryEmbed
+ChromaRetriever -.->|"Fetch"| ChromaDB
+ChromaRetriever --> PromptBuilder
+LLMCall -->|"Response"| RAGChain
 
 ```
 
@@ -133,7 +130,7 @@ sequenceDiagram
     participant Chroma as Vector DB<br/>(Chroma)
 
     User->>Frontend: Enter GitHub URL
-    Frontend->>API: POST /index-repo {url}
+    Frontend->>API: POST /load_repo {url}
     API->>Loader: Load and clone repo
     Loader->>Loader: Extract .py, .js, .md, etc.
     Loader->>Chunker: Split into chunks
@@ -163,7 +160,7 @@ sequenceDiagram
     participant Gemini as Google Gemini
 
     User->>Frontend: Ask question
-    Frontend->>API: POST /chat {question}
+    Frontend->>API: POST /ask {question}
     API->>EmbedModel: Embed question
     EmbedModel->>EmbedModel: Generate query vector
     API->>Chroma: Search top-k chunks
