@@ -1,58 +1,385 @@
 # 🧠💬 GitHub Codebase Assistant
 
-A chat-based AI assistant for deeply understanding and navigating GitHub repositories.
+A chat-based AI assistant for deeply understanding and navigating GitHub repositories using Retrieval-Augmented Generation (RAG).
 
 ---
 
-### 🚀 What this Project Does
+## 🚀 What this Project Does
 
-This tool allows developers to **ask questions about any codebase** and get reliable, context-aware answers, grounded only in the repository's source files. It’s built on a **Retrieval-Augmented Generation (RAG)** architecture to eliminate hallucinations and provide high-fidelity technical insights.
+This tool allows developers to **ask questions about any codebase** and get reliable, context-aware answers, grounded only in the repository's source files. Built on a **Retrieval-Augmented Generation (RAG)** architecture, it eliminates hallucinations and provides high-fidelity technical insights with exact file references.
 
 ### ✨ Core Features
 
-* **Clone & Index:** Clones any public GitHub repository for processing.
-* **Deep Understanding:** Parses and chunks source code files for deep, granular comprehension.
-* **Vectorized Knowledge:** Generates embeddings for code snippets and stores them in a vector database.
-* **Precision Retrieval:** Retrieves the most relevant code snippets for every question asked.
-* **Context-Aware Chat:** Interact with the codebase as a conversation.
-* **Grounded Responses:** Responses are guaranteed to be based *only* on the provided source code.
-* **Exact References:** Get file references (`src/path/to/file.js`) alongside every answer.
+- **Clone & Index:** Clones any public GitHub repository for processing
+- **Deep Understanding:** Parses and chunks source code files for granular comprehension
+- **Vectorized Knowledge:** Generates embeddings for code snippets using local embedding models
+- **Precision Retrieval:** Retrieves the most relevant code snippets for each question
+- **Context-Aware Chat:** Interact with the codebase through natural conversation
+- **Grounded Responses:** Responses are guaranteed to be based *only* on provided source code
+- **Exact References:** Get file references alongside every answer
 
 ---
 
 ## 🧩 Tech Stack
 
-This project is built using a modern, efficient, and fully self-hosted stack to deliver fast, reliable code insights.
-
-| Category | Key Technologies | Description |
-| :--- | :--- | :--- |
-| **Frontend** | `React`, `CSS/Tailwind` | Minimalist, chat-style UI with real-time typing indicators for a responsive feel. |
-| **Backend** | `FastAPI` | High-performance Python REST API handling repo loading, indexing, and Q/A requests. |
-| **Caching** | In-Memory Stores | Used for caching loaded repositories and vector stores to minimize re-indexing time. |
-
-### 🤖 AI / RAG Components
-
-* **Orchestration:** **LangChain**
-    * Used for managing the RAG pipeline, chaining components, and structured prompting.
-* **Vector Database:** **Chroma**
-    * The persistent, in-memory store for vectorized code embeddings.
-* **Local LLM Host:** **Ollama**
-    * Enables local, private execution of the Language Model.
-    * **LLM:** **Llama 3** (The large language model used for generating answers.)
-    * **Embeddings:** **mxbai-embed-large** (The embedding model used to create vector representations of the code.)
+| Component                   | Technology                             | Purpose                                        |
+| --------------------------- | -------------------------------------- | ---------------------------------------------- |
+| **Frontend**          | React + Vite                           | Modern chat UI with real-time interactions     |
+| **Backend**           | FastAPI (Python)                       | High-performance REST API for indexing and Q/A |
+| **Vector DB**         | Chroma                                 | Persistent storage for code embeddings         |
+| **LLM Orchestration** | LangChain                              | RAG pipeline management and prompting          |
+| **Language Model**    | Google Gemini                          | Core AI model for generating answers           |
+| **Embedding Model**   | sentence-transformers/all-MiniLM-L6-v2 | Vector representations of code snippets        |
+| **Containerization**  | Docker & Docker Compose                | Containerized deployment                       |
 
 ---
 
-### ❓ Example Questions You Can Ask
+## 📋 Prerequisites
 
-* `Which function handles login?`
-* `Where is authentication implemented?`
-* `How does this service work internally?`
-* `Explain this class like I’m new to the project.`
-* `What is the purpose of the 'utility.py' file?`
+- **Python 3.9+** (for backend)
+- **Node.js 16+** (for frontend)
+- **Docker & Docker Compose** (for containerized setup)
+- **Google Gemini API Key** (for LLM access)
+- **Git** (for cloning repositories)
 
 ---
 
-### 🛠️ Architecture Overview
+## 🔧 Installation & Setup
 
-This project uses a **RAG (Retrieval-Augmented Generation)** architecture to deeply understand real codebases instead of hallucinating.
+### Option 1: Docker Compose (Recommended)
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd rag
+
+# Start all services
+make up 
+```
+
+The application will be available at `http://localhost:5173` (frontend) and API at `http://localhost:8000`.
+
+### Option 2: Manual Setup
+
+#### Backend Setup
+
+```bash
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+
+# Install dependencies
+cd backend
+pip install -r requirements.txt
+
+# Start backend
+python main.py
+```
+
+#### Frontend Setup
+
+```bash
+# Install dependencies
+cd frontend
+npm install
+
+# Start development server
+npm run dev
+```
+
+---
+
+## 📚 Project Structure
+
+```
+rag/
+├── backend/                 # Python FastAPI backend
+│   ├── main.py             # Entry point
+│   ├── requirements.txt     # Python dependencies
+│   ├── Dockerfile          # Container image for backend
+│   ├── embeddings/         # Embedding generation module
+│   ├── llm/                # LLM chain setup and orchestration
+│   ├── loaders/            # Repository loader and parser
+│   ├── utils/              # Utility functions and helpers
+│   └── chroma_langchain_db/ # Vector store persistence
+├── frontend/               # React + Vite frontend
+│   ├── src/
+│   │   ├── components/     # React components
+│   │   ├── api.js          # API communication layer
+│   │   ├── App.jsx         # Main app component
+│   │   ├── main.jsx        # Entry point
+│   │   ├── App.css         # Global styles
+│   │   ├── chatpage.css    # Chat page styles
+│   │   └── landingpage.css # Landing page styles
+│   ├── public/             # Static assets
+│   ├── package.json        # Node dependencies
+│   ├── vite.config.js      # Vite configuration
+│   ├── Dockerfile          # Container image for frontend
+│   └── index.html          # HTML template
+├── docker-compose.yml      # Multi-container orchestration
+├── Makefile                # Build automation scripts
+├── .dockerignore            # Docker build ignore file
+├── .gitignore              # Git ignore file
+└── README.md               # This file
+```
+
+---
+
+## 🎯 How It Works
+
+### RAG Pipeline Architecture
+
+1. **Repository Cloning:** User provides a GitHub repository URL
+2. **Code Parsing:** Source files are parsed and chunked into meaningful segments
+3. **Embedding Generation:** Each chunk is converted to a dense vector using mxbai-embed-large model
+4. **Vector Storage:** Embeddings are persisted in Chroma vector database for fast retrieval
+5. **Query Processing:** User questions are also embedded using the same model
+6. **Semantic Retrieval:** Most relevant code chunks are retrieved based on vector similarity
+7. **Context Augmentation:** Retrieved chunks are combined with the original question
+8. **LLM Generation:** Llama 3 generates an answer based on the augmented context
+9. **Response Delivery:** Grounded answer with exact file references and line numbers
+
+---
+
+## ❓ Example Questions
+
+- `Which function handles authentication?`
+- `Where is the database connection established?`
+- `How does the API route work?`
+- `Explain the error handling mechanism`
+- `What does the utility module do?`
+- `Show me how caching is implemented`
+- `What are the main components of this project?`
+
+---
+
+## 🚀 API Endpoints
+
+### Backend API (FastAPI)
+
+```
+POST /chat
+  Description: Send a question about the codebase
+  Request: { "question": "...", "repo_context": "..." }
+  Response: { "answer": "...", "sources": [...] }
+
+POST /index-repo
+  Description: Index a GitHub repository
+  Request: { "repo_url": "https://github.com/user/repo" }
+  Response: { "status": "success", "message": "..." }
+
+GET /health
+  Description: Health check endpoint
+  Response: { "status": "ok" }
+
+GET /
+  Description: API documentation (Swagger UI)
+```
+
+---
+
+## 🐳 Docker Deployment
+
+### Using Docker Compose (Recommended)
+
+```bash
+# Build and start all containers
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# View specific service logs
+docker-compose logs -f backend
+docker-compose logs -f frontend
+
+# Stop services
+docker-compose down
+
+# Clean up (remove volumes)
+docker-compose down -v
+```
+
+### Manual Docker Build
+
+```bash
+# Backend
+cd backend
+docker build -t rag-backend:latest .
+docker run -p 8000:8000 rag-backend:latest
+
+# Frontend
+cd frontend
+docker build -t rag-frontend:latest .
+docker run -p 5173:5173 rag-frontend:latest
+```
+
+---
+
+## 🔌 Environment Variables
+
+Create a `.env` file in the backend directory:
+
+```env
+# Google Gemini Configuration
+GOOGLE_API_KEY=your_google_gemini_api_key_here
+MODEL_NAME=gemini-pro
+
+# Embedding Model Configuration
+EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
+
+# API Configuration
+API_HOST=0.0.0.0
+API_PORT=8000
+DEBUG=false
+
+# Vector Database
+CHROMA_DB_PATH=./chroma_langchain_db
+
+# Frontend Configuration
+VITE_API_URL=http://localhost:8000
+```
+
+---
+
+## 📊 Performance Considerations
+
+- **Caching:** In-memory caching of loaded repositories reduces re-indexing time
+- **Chunking Strategy:** Code is split intelligently to maintain context while optimizing retrieval
+- **Vector Similarity:** Retrieves top-k most relevant chunks (configurable) for each query
+- **Streaming:** Frontend supports streaming responses for better real-time UX
+- **Database Indexing:** Chroma provides fast vector similarity search with HNSW algorithm
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Development Workflow
+
+```bash
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dev dependencies
+pip install -r backend/requirements.txt
+
+# Run backend with auto-reload
+python backend/main.py
+
+# In another terminal, run frontend
+cd frontend
+npm install
+npm run dev
+```
+
+---
+
+## 📝 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+---
+
+## 🆘 Troubleshooting
+
+### Issue: Gemini API key not set
+
+```bash
+# Set your Google Gemini API key in .env file
+# Get your API key from: https://makersuite.google.com/app/apikey
+GOOGLE_API_KEY=your_actual_api_key_here
+```
+
+### Issue: Backend connection refused
+
+- Ensure `GOOGLE_API_KEY` environment variable is correctly configured
+- Verify your API key is valid and has proper permissions
+- Check network connectivity to Google Gemini API
+
+### Issue: Vector database errors
+
+```bash
+# Clear and rebuild vector store
+rm -rf backend/chroma_langchain_db/
+# Restart the application to rebuild from scratch
+```
+
+### Issue: Frontend can't connect to backend
+
+- Verify backend is running on `http://localhost:8000`
+- Check `VITE_API_URL` in frontend environment
+- Check browser console for CORS errors
+
+### Issue: Out of memory when indexing large repositories
+
+- Reduce chunk size in configuration
+- Process repositories in smaller batches
+- Ensure sufficient system RAM (8GB+ recommended)
+
+---
+
+## 📖 Additional Resources
+
+- [LangChain Documentation](https://python.langchain.com/)
+- [Chroma Vector Database](https://docs.trychroma.com/)
+- [Google Gemini API](https://ai.google.dev/)
+- [Sentence Transformers](https://www.sbert.net/)
+- [FastAPI Guide](https://fastapi.tiangolo.com/)
+- [React Documentation](https://react.dev/)
+- [Vite Configuration](https://vitejs.dev/)
+- [RAG Architecture](https://arxiv.org/abs/2005.11401)
+
+---
+
+## 🎓 Learning Resources
+
+Understanding RAG:
+
+- RAG combines retrieval and generation for better accuracy
+- Embeddings convert text to dense vectors for similarity search
+- Vector databases enable fast semantic retrieval
+- LLMs generate responses based on retrieved context
+
+---
+
+## 📞 Support
+
+For issues, questions, or suggestions:
+
+- Open an issue on GitHub
+- Check existing issues for solutions
+- Review logs for error details
+- Contact the maintainers
+
+---
+
+## 🙏 Acknowledgments
+
+Built with:
+
+- The LangChain community for excellent LLM orchestration
+- Chroma team for fast vector database
+- Google Gemini for powerful AI-powered responses
+- Sentence Transformers for efficient embeddings
+- FastAPI for high-performance Python APIs
+- React and Vite for modern frontend development
+
+---
+
+**Happy coding! 🚀**
+
+*Last Updated: December 2025*
