@@ -226,122 +226,61 @@ graph TD
 
 ---
 
-## Technology Stack Overview
+## Class Diagram (Mermaid)
 
-### Frontend
+```mermaid
+classDiagram
+        class FrontendAPIClient {
+            +indexRepo(repoUrl)
+            +chat(repoId, question)
+        }
 
-- **React**: UI framework for interactive chat interface
-- **Vite**: Lightning-fast build tool & dev server
-- **Styling**: CSS for layout and theming
+        class FastAPIApp {
+            +LoadRepoRequest(repo_url)
+            +AskRequest(repo_id, question)
+            +index_repo(req)
+            +chat(req)
+        }
 
-### Backend
+        class RepoLoader {
+            +clone_repo(url)
+            +load_repo_files(path)
+            +split_code_docs(docs)
+        }
 
-- **FastAPI**: High-performance Python async API framework
-- **Python 3.9+**: Language runtime
+        class EmbeddingGenerator {
+            +get_vector_store(chunks, repo_id)
+        }
 
-### AI/ML Components
+        class VectorStore {
+            +as_retriever(search_type, search_kwargs)
+            +persist(chunks)
+        }
 
-- **LangChain**: Orchestrates RAG pipeline, prompts, and LLM chains
-- **Sentence-Transformers** (all-MiniLM-L6-v2): Converts text to 384-dimensional embeddings
-- **Google Gemini**: LLM for generating grounded answers
-- **Chroma**: Vector database for persistent embedding storage and retrieval
+        class ChromaDB {
+            +store_vectors(vectors)
+            +query_vectors(query, k)
+        }
 
-### Containerization & Deployment
+        class Retriever {
+            +retrieve(query, k)
+        }
 
-- **Docker**: Containerizes frontend and backend
-- **Docker Compose**: Orchestrates multi-container local environment
+        class PromptBuilder {
+            +build_prompt(docs, question)
+        }
 
----
+        class LLMChain {
+            +answer_from_docs(docs, question)
+        }
 
-## RAG Pipeline: Step-by-Step
-
-1. **Repository Input**
-
-   - User provides GitHub repository URL
-   - Backend clones repo using `repo_loader.py`
-2. **Code Parsing & Chunking**
-
-   - Extract source files (`.py`, `.js`, `.ts`, `.md`, etc.)
-   - Split into semantic chunks (maintains context, ~500 tokens/chunk)
-   - Preserve file path, line number metadata
-3. **Embedding Generation**
-
-   - Each chunk → sentence-transformers model
-   - Output: 384-dimensional dense vectors
-4. **Vector Storage**
-
-   - Vectors stored in Chroma with metadata
-   - Chroma builds HNSW index for fast retrieval
-5. **Query Processing**
-
-   - User question → embed using same model
-   - Query vector → similarity search in Chroma
-6. **Context Retrieval**
-
-   - Top-k chunks (default: 5-10) ranked by cosine similarity
-   - Preserve file path + line numbers for sources
-7. **Prompt Construction**
-
-   - Build RAG prompt: `{question} + {context} → answer`
-   - Use LangChain to orchestrate
-8. **LLM Generation**
-
-   - Send prompt to Google Gemini
-   - Receive generated answer
-9. **Response Assembly**
-
-   - Return answer + source references (file, line #)
-   - Frontend displays grounded response
-
----
-
-## API Contract
-
-### POST /index-repo
-
-```json
-Request:  { "repo_url": "https://github.com/user/repo" }
-Response: { "status": "success", "message": "..." }
+        FrontendAPIClient --> FastAPIApp : POST /load-repo, /ask
+        FastAPIApp --> RepoLoader : uses
+        RepoLoader --> EmbeddingGenerator : provides chunks
+        EmbeddingGenerator --> VectorStore : creates/returns
+        VectorStore --> ChromaDB : persists vectors
+        VectorStore --> Retriever : exposes retriever
+        Retriever --> PromptBuilder : supplies docs
+        PromptBuilder --> LLMChain : builds prompt for
+        LLMChain --> FastAPIApp : returns answer
 ```
-
-### POST /chat
-
-```json
-Request:  { "question": "How does authentication work?" }
-Response: { 
-  "answer": "...",
-  "sources": [
-    { "file": "backend/auth.py", "line": 42 },
-    { "file": "backend/utils.py", "line": 88 }
-  ]
-}
-```
-
----
-
-## Performance & Scalability Notes
-
-- **Embeddings**: Cached in memory and persisted in Chroma (~instant retrieval)
-- **Chunking**: Semantic splitting maintains context while controlling chunk size
-- **Retrieval**: HNSW index in Chroma provides O(log n) search time
-- **LLM Latency**: Dominant factor; typically 2-5 seconds for answer generation
-- **Scalability**: Can handle 1000s of code files; Chroma scales to millions of embeddings
-
----
-
-## Development Workflow
-
-1. **Local Setup**: Run backend + frontend locally with hot-reload
-2. **Testing**: Index a test repo, ask questions, iterate
-3. **Docker Build**: Use `docker-compose up` for containerized stack
-4. **Production**: Deploy backend to cloud (AppEngine, Azure, etc.), frontend to CDN
-
----
-
-## Future Enhancements
-
-- Hybrid search (keyword + semantic)
-- Multi-language support
-- Fine-tuned embeddings for code
-- Streaming responses
-- User query logging & analytics
