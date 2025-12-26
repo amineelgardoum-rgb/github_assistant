@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Spinner from "./Spinner";
-import { loadRepo } from "../api";
-import "../landingpage.css";
+import { loadRepo } from "../job/api";
+import "../style/landingpage.css"
 
 export default function LandingPage({ setRepoId, setPage }) {
   const [repoUrl, setRepoUrl] = useState("");

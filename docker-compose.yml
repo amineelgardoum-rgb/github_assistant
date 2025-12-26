@@ -3,6 +3,7 @@ services:
     container_name: backend
     build:
       context: ./backend
+      dockerfile: docker/Dockerfile
     volumes:
       - ./backend:/app
     env_file:
@@ -13,9 +14,10 @@ services:
     container_name: frontend
     build:
       context: ./frontend
+      dockerfile: docker/Dockerfile
     volumes:
       - ./frontend:/app
-      -   /app/node_modules  
+      -  /app/node_modules  
     ports:
       - 5173:5173
     depends_on:

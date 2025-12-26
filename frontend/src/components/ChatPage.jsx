@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { askQuestion } from "../api";
+import { askQuestion } from "../job/api";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import "../chatpage.css";
+import "../style/chatpage.css";
 
 export default function ChatPage({ repoId }) {
   const [messages, setMessages] = useState([

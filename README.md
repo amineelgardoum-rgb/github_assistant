@@ -124,13 +124,23 @@ These commands simplify Docker Compose workflows for local development and testi
 ```
 rag/
 ├── backend/                 # Python FastAPI backend
-│   ├── main.py             # Entry point
-│   ├── requirements.txt     # Python dependencies
-│   ├── Dockerfile          # Container image for backend
-│   ├── embeddings/         # Embedding generation module
-│   ├── llm/                # LLM chain setup and orchestration
-│   ├── loaders/            # Repository loader and parser
-│   ├── utils/              # Utility functions and helpers
+│   └── api/                 # api logic (routers/schemas)
+│   │   ├── routers/         # routers
+│   │   │    ├── __init__.py                     # __init__.py file
+│   │   │    ├── ask_router.py                   # ask router /ask
+│   │   │    └── load_repo_router.py             # load router /load
+|   |   ├── schemas/
+|   |   |    ├── __init__.py    # __init__.py file
+|   |   |    ├── askRequest.py  # class validation for /ask
+|   |   |    └──  loadRequest.py # class validation for /load_repo
+|   |   └── vector_cache.py # vector cache  for the caching 
+│   ├── requirements.txt      # Python dependencies
+│   ├── docker/               # docker setup folder
+|   |    └── Dockerfile       # dockerfile
+│   ├── embeddings/           # Embedding generation module
+│   ├── llm/                  # LLM chain setup and orchestration
+│   ├── loaders/              # Repository loader and parser
+│   ├── utils/                # Utility functions and helpers
 │   └── chroma_langchain_db/ # Vector store persistence
 ├── frontend/               # React + Vite frontend
 │   ├── src/
