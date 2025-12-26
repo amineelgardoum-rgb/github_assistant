@@ -201,7 +201,7 @@ github_assistant/
 │   ├── chat_&_answer.png         # Chat sequence diagram
 │   ├── indexing_repo.png         # Indexing sequence diagram
 │   ├── class_diag.png            # Class diagram
-│   └── rag_pipeline_architecture.png # RAG architecture
+│   └── pipeline_architecture.png # RAG architecture
 │
 ├── docker-compose.yml            # Multi-container orchestration
 ├── Makefile                      # Build automation
