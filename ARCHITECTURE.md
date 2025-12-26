@@ -117,6 +117,74 @@ LLMCall -->|"Response"| RAGChain
 
 ---
 
+## Activity Diagram (User Workflows)
+
+```mermaid
+graph TD
+    Start([User Opens App])
+
+    subgraph IndexRepo[Index Repository Flow]
+        EnterURL[Enter GitHub URL]
+        SendIndex[POST /load_repo]
+        CloneRepo[Clone Repository and generate repo_id]
+        CacheCheck{Vector store exists?}
+        LoadFiles[Load source files]
+        ChunkCode[Split into chunks]
+        GenEmbeds[Generate embeddings]
+        StoreVectors[Store in Chroma]
+        IndexSuccess[Repository indexed]
+
+        EnterURL --> SendIndex
+        SendIndex --> CloneRepo
+        CloneRepo --> CacheCheck
+        CacheCheck -->|Yes| IndexSuccess
+        CacheCheck -->|No| LoadFiles
+        LoadFiles --> ChunkCode
+        ChunkCode --> GenEmbeds
+        GenEmbeds --> StoreVectors
+        StoreVectors --> IndexSuccess
+    end
+
+    subgraph AskQuestion[Ask Question Flow]
+        EnterQuestion[Enter question]
+        SendAsk[POST /ask]
+        RepoLoaded{Repo indexed?}
+        Error2[Repo not indexed]
+        EmbedQuery[Embed question]
+        SearchVectors[Similarity search]
+        RetrieveDocs[Retrieve documents]
+        BuildPrompt[Build prompt]
+        CallLLM[Call LLM]
+        GenAnswer[Generate answer]
+        ReturnAnswer[Return answer]
+
+        EnterQuestion --> SendAsk
+        SendAsk --> RepoLoaded
+        RepoLoaded -->|No| Error2
+        RepoLoaded -->|Yes| EmbedQuery
+        EmbedQuery --> SearchVectors
+        SearchVectors --> RetrieveDocs
+        RetrieveDocs --> BuildPrompt
+        BuildPrompt --> CallLLM
+        CallLLM --> GenAnswer
+        GenAnswer --> ReturnAnswer
+    end
+
+    Choice{Choose action}
+    End([Exit])
+
+    Start --> Choice
+    Choice -->|Index repo| EnterURL
+    Choice -->|Ask question| EnterQuestion
+    IndexSuccess --> Choice
+    ReturnAnswer --> Choice
+    Error2 --> Choice
+    Choice -->|Exit| End
+
+```
+
+---
+
 ## Data Flow: Indexing a Repository
 
 ```mermaid
