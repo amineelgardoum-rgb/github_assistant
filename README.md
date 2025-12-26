@@ -124,19 +124,19 @@ These commands simplify Docker Compose workflows for local development and testi
 ```
 rag/
 ├── backend/                 # Python FastAPI backend
-│   └── api/                 # api logic (routers/schemas)
-│   │   ├── routers/         # routers
+│   └── api/                 # Api logic (routers/schemas)
+│   │   ├── routers/         # Routers
 │   │   │    ├── __init__.py                     # __init__.py file
 │   │   │    ├── ask_router.py                   # ask router /ask
 │   │   │    └── load_repo_router.py             # load router /load
 |   |   ├── schemas/
-|   |   |    ├── __init__.py    # __init__.py file
-|   |   |    ├── askRequest.py  # class validation for /ask
-|   |   |    └──  loadRequest.py # class validation for /load_repo
+|   |   |    ├── __init__.py     # __init__.py file
+|   |   |    ├── askRequest.py   # Class validation for /ask
+|   |   |    └──  loadRequest.py # Class validation for /load_repo
 |   |   └── vector_cache.py # vector cache  for the caching 
 │   ├── requirements.txt      # Python dependencies
-│   ├── docker/               # docker setup folder
-|   |    └── Dockerfile       # dockerfile
+│   ├── docker/               
+|   |    └── Dockerfile       # Dockerfile for the backend service
 │   ├── embeddings/           # Embedding generation module
 │   ├── llm/                  # LLM chain setup and orchestration
 │   ├── loaders/              # Repository loader and parser
@@ -145,21 +145,26 @@ rag/
 ├── frontend/               # React + Vite frontend
 │   ├── src/
 │   │   ├── components/     # React components
-│   │   ├── api.js          # API communication layer
-│   │   ├── App.jsx         # Main app component
+│   │   ├── job/            # Job for the api fetching
+│   │   ├── style/          # styling for the components
+│   │   ├── assets/         # The icons svg
 │   │   ├── main.jsx        # Entry point
-│   │   ├── App.css         # Global styles
-│   │   ├── chatpage.css    # Chat page styles
-│   │   └── landingpage.css # Landing page styles
+│   │   └── App.jsx         # The app jsx file
 │   ├── public/             # Static assets
 │   ├── package.json        # Node dependencies
 │   ├── vite.config.js      # Vite configuration
-│   ├── Dockerfile          # Container image for frontend
+│   ├── .dockerignore       # Docker ignore (ignore in build)
+│   ├── .gitignore          # Ignore file 
+│   ├── docker/ 
+|   |     └── Dockerfile    # Dockerfile file for frontend folder
+|   ├── eslint.config.js    # Config linting for the js code
 │   └── index.html          # HTML template
 ├── docker-compose.yml      # Multi-container orchestration
 ├── Makefile                # Build automation scripts
-├── .dockerignore            # Docker build ignore file
+├── .dockerignore           # Docker build ignore file
 ├── .gitignore              # Git ignore file
+├── ARCHITECTURE.md         # architecture file for the project
+├── diag.png                # a png file for the diagram file
 └── README.md               # This file
 ```
 
