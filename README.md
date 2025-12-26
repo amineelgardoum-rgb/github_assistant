@@ -209,8 +209,6 @@ github_assistant/
 └── LICENSE                       # MIT License
 ```
 
-For detailed backend documentation, see [backend/README.md](backend/README.md).
-
 ---
 
 ## 🎯 How It Works
