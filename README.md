@@ -80,11 +80,7 @@ The fastest way to get started:
 # Clone the repository
 git clone https://github.com/amineelgardoum-rgb/github_assistant.git
 cd github_assistant
-
-# Configure environment variables
-cp backend/.env.example backend/.env
-# Edit backend/.env and add your GOOGLE_API_KEY
-
+# add the .env file 
 # Start all services
 make up
 ```
