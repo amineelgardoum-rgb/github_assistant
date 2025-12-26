@@ -119,7 +119,7 @@ These commands simplify Docker Compose workflows for local development and testi
 
 ---
 
-## 🀽� Project Structure
+## 🀽Project Structure
 
 ```
 rag/
@@ -166,7 +166,7 @@ rag/
 5. **Query Processing:** User questions are also embedded using the same model
 6. **Semantic Retrieval:** Most relevant code chunks are retrieved based on vector similarity
 7. **Context Augmentation:** Retrieved chunks are combined with the original question
-8. **LLM Generation:** Llama 3 generates an answer based on the augmented context
+8. **LLM Generation:** Gemini generates an answer based on the augmented context
 9. **Response Delivery:** Grounded answer with exact file references and line numbers
 
 ---
