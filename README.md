@@ -174,16 +174,23 @@ rag/
 │   ├── .dockerignore            # Docker ignore (ignore in build)
 │   ├── .gitignore               # Ignore file 
 │   ├── docker/  
-|   |     └── Dockerfile     # Dockerfile file for frontend folder
-|   ├── eslint.config.js     # Config linting for the js code
-│   └── index.html           # HTML template
-├── docker-compose.yml       # Multi-container orchestration
-├── Makefile                 # Build automation scripts
-├── .dockerignore            # Docker build ignore file
-├── .gitignore               # Git ignore file
-├── ARCHITECTURE.md          # architecture file for the project
-├── diag.png                 # a png file for the diagram file
-└── README.md                # This file
+|   |     └── Dockerfile      # Dockerfile file for frontend folder
+|   ├── eslint.config.js      # Config linting for the js code
+│   └── index.html            # HTML template
+├──  diagram/                 # Diagram folder
+|      ├──  activity_diag.png  # Activity diagram for the project
+|      ├──  chat_&_answer.png  # Chat and answer sequence diagram
+|      ├──  files_structure.png          # The project  structure
+|      ├──  high_level_architecture.png # High level architecture
+|      ├──  indexing_repo.png  # Indexing sequence diagram
+|      ├──  class_diag.png     # class diagram 
+|      └──  rag_pipeline_architecture.png # Rag pipeline architecture
+├──  docker-compose.yml       # Multi-container orchestration
+├──  Makefile                 # Build automation scripts
+├──  .dockerignore            # Docker build ignore file
+├──  .gitignore               # Git ignore file
+├──  README.md                # This file
+└──  LICENSE                  # License file
 ```
 
 ---
