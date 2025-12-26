@@ -126,46 +126,64 @@ rag/
 ├── backend/                 # Python FastAPI backend
 │   └── api/                 # Api logic (routers/schemas)
 │   │   ├── routers/         # Routers
-│   │   │    ├── __init__.py                     # __init__.py file
-│   │   │    ├── ask_router.py                   # ask router /ask
-│   │   │    └── load_repo_router.py             # load router /load
+│   │   │    ├── __init__.py            # int file
+│   │   │    ├── ask_router.py          # ask router /ask
+│   │   │    └── load_repo_router.py    # load router /load
 |   |   ├── schemas/
-|   |   |    ├── __init__.py     # __init__.py file
+|   |   |    ├── __init__.py     # init file
 |   |   |    ├── askRequest.py   # Class validation for /ask
 |   |   |    └──  loadRequest.py # Class validation for /load_repo
-|   |   └── vector_cache.py # vector cache  for the caching 
-│   ├── requirements.txt      # Python dependencies
+|   |   └── vector_cache.py      # vector cache  for the caching 
 │   ├── docker/               
-|   |    └── Dockerfile       # Dockerfile for the backend service
-│   ├── embeddings/           # Embedding generation module
-│   ├── llm/                  # LLM chain setup and orchestration
-│   ├── loaders/              # Repository loader and parser
-│   ├── utils/                # Utility functions and helpers
-│   └── chroma_langchain_db/ # Vector store persistence
+|   |    └── Dockerfile          # Dockerfile for the backend service
+│   ├── embeddings/              # Embedding generation module
+|   |     ├── __init__.py        # __init__.py file
+|   |     └── vector_store.py    # vector store logic 
+│   ├── llm/
+|   |    ├── __init__.py         # init file                  
+|   |    └── llm_chain.py        # llm chain logic and setup
+│   ├── loaders/                 # Repository loader and parser
+|   |    ├── __init__.py         # init file
+|   |    └── repo_loader.py      # repository loader logic  
+│   ├── utils/                
+|   |    ├── __init__.py         # init file 
+|   |    └── retriever_utils.py  # retrieving logic 
+│   ├── .dockerignore            # Docker ignore build
+|   └── main.py                  # main api entry
 ├── frontend/               # React + Vite frontend
 │   ├── src/
-│   │   ├── components/     # React components
-│   │   ├── job/            # Job for the api fetching
-│   │   ├── style/          # styling for the components
-│   │   ├── assets/         # The icons svg
-│   │   ├── main.jsx        # Entry point
-│   │   └── App.jsx         # The app jsx file
-│   ├── public/             # Static assets
-│   ├── package.json        # Node dependencies
-│   ├── vite.config.js      # Vite configuration
-│   ├── .dockerignore       # Docker ignore (ignore in build)
-│   ├── .gitignore          # Ignore file 
-│   ├── docker/ 
-|   |     └── Dockerfile    # Dockerfile file for frontend folder
-|   ├── eslint.config.js    # Config linting for the js code
-│   └── index.html          # HTML template
-├── docker-compose.yml      # Multi-container orchestration
-├── Makefile                # Build automation scripts
-├── .dockerignore           # Docker build ignore file
-├── .gitignore              # Git ignore file
-├── ARCHITECTURE.md         # architecture file for the project
-├── diag.png                # a png file for the diagram file
-└── README.md               # This file
+│   │   ├── components/       # React components
+|   |   |    ├── ChatPage.jsx # Chat page component
+|   |   |    ├── Landing.jsx  # Landing page component
+|   |   |    └── Spinner.jsx  # Spinner component
+│   │   ├── job/           
+|   |   |    └── api.js          # api logic for the frontend    
+│   │   ├── style/               
+|   |   |    ├── App.css         # app styling
+|   |   |    ├── chatpage.css    # chat page styling 
+|   |   |    ├── index.css       # index styling
+|   |   |    └── landingpage.css # landing page styling
+│   │   ├── assets/         
+|   |   |    └── react.svg       # react svg
+│   │   ├── main.jsx             # Entry point
+│   │   └── App.jsx              # The app jsx file
+│   ├── public/                  # Static assets
+|   |    └── vite.svg            # static icon
+│   ├── package.json             # Node dependencies
+│   ├── vite.config.js           # Vite configuration
+│   ├── .dockerignore            # Docker ignore (ignore in build)
+│   ├── .gitignore               # Ignore file 
+│   ├── docker/  
+|   |     └── Dockerfile     # Dockerfile file for frontend folder
+|   ├── eslint.config.js     # Config linting for the js code
+│   └── index.html           # HTML template
+├── docker-compose.yml       # Multi-container orchestration
+├── Makefile                 # Build automation scripts
+├── .dockerignore            # Docker build ignore file
+├── .gitignore               # Git ignore file
+├── ARCHITECTURE.md          # architecture file for the project
+├── diag.png                 # a png file for the diagram file
+└── README.md                # This file
 ```
 
 ---
