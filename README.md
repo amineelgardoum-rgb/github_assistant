@@ -118,9 +118,6 @@ source venv/bin/activate
 # Install dependencies
 pip install -r requirements.txt
 
-# Configure environment
-cp .env.example .env
-# Edit .env and add your GOOGLE_API_KEY
 
 # Start backend server
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
