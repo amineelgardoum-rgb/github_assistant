@@ -10,7 +10,7 @@ This tool allows developers to **ask questions about any codebase** and get reli
 
 ### ✨ Core Features
 
-- **Clone & Index:** Clones any public GitHub repository for processing
+- **Clone & Index:** Clones any public � GitHub repository for processing
 - **Deep Understanding:** Parses and chunks source code files for granular comprehension
 - **Vectorized Knowledge:** Generates embeddings for code snippets using local embedding models
 - **Precision Retrieval:** Retrieves the most relevant code snippets for each question
@@ -22,15 +22,15 @@ This tool allows developers to **ask questions about any codebase** and get reli
 
 ## 🧩 Tech Stack
 
-| Component                   | Technology                             | Purpose                                        |
-| --------------------------- | -------------------------------------- | ---------------------------------------------- |
-| **Frontend**          | React + Vite                           | Modern chat UI with real-time interactions     |
-| **Backend**           | FastAPI (Python)                       | High-performance REST API for indexing and Q/A |
-| **Vector DB**         | Chroma                                 | Persistent storage for code embeddings         |
-| **LLM Orchestration** | LangChain                              | RAG pipeline management and prompting          |
-| **Language Model**    | Google Gemini                          | Core AI model for generating answers           |
-| **Embedding Model**   | sentence-transformers/all-MiniLM-L6-v2 | Vector representations of code snippets        |
-| **Containerization**  | Docker & Docker Compose                | Containerized deployment                       |
+| Component                   | Technology                                | Purpose                                        |
+| --------------------------- | ----------------------------------------- | ---------------------------------------------- |
+| **Frontend**          | ⚛️ React + ⚡️ Vite                    | Modern chat UI with real-time interactions     |
+| **Backend**           | 🚀 FastAPI (🐍 Python)                    | High-performance REST API for indexing and Q/A |
+| **Vector DB**         | 🗄️ Chroma                               | Persistent storage for code embeddings         |
+| **LLM Orchestration** | 🔗 LangChain                              | RAG pipeline management and prompting          |
+| **Language Model**    | 🌐 Google Gemini                          | Core AI model for generating answers           |
+| **Embedding Model**   | 🧠 sentence-transformers/all-MiniLM-L6-v2 | Vector representations of code snippets        |
+| **Containerization**  | 🐳 Docker + 🧩 Docker Compose             | Containerized deployment                       |
 
 ---
 
@@ -50,8 +50,8 @@ This tool allows developers to **ask questions about any codebase** and get reli
 
 ```bash
 # Clone the repository
-git clone <repository-url>
-cd rag
+git clone https://github.com/amineelgardoum-rgb/github_assistant.git
+cd github_assistant
 
 # Start all services
 make up 
@@ -94,7 +94,32 @@ npm run dev
 
 ---
 
-## 📚 Project Structure
+## Make Commands
+
+The project includes a `Makefile` with convenient commands for Docker operations:
+
+```bash
+# Start all services (build & run in background)
+make up
+
+# Stop all services and remove volumes
+make down
+
+# View logs from all services (follow mode)
+make logs
+
+# View backend service logs only
+make backendLogs
+
+# View frontend service logs only
+make frontendLogs
+```
+
+These commands simplify Docker Compose workflows for local development and testing.
+
+---
+
+## 🀽� Project Structure
 
 ```
 rag/
@@ -134,7 +159,7 @@ rag/
 
 ### RAG Pipeline Architecture
 
-1. **Repository Cloning:** User provides a GitHub repository URL
+1. **Repository Cloning:** User provides a � GitHub repository URL
 2. **Code Parsing:** Source files are parsed and chunked into meaningful segments
 3. **Embedding Generation:** Each chunk is converted to a dense vector using mxbai-embed-large model
 4. **Vector Storage:** Embeddings are persisted in Chroma vector database for fast retrieval
@@ -163,22 +188,19 @@ rag/
 ### Backend API (FastAPI)
 
 ```
-POST /chat
-  Description: Send a question about the codebase
-  Request: { "question": "...", "repo_context": "..." }
-  Response: { "answer": "...", "sources": [...] }
-
-POST /index-repo
-  Description: Index a GitHub repository
+POST /load_repo
+  Description: Index a � GitHub repository by cloning and embedding its files
   Request: { "repo_url": "https://github.com/user/repo" }
-  Response: { "status": "success", "message": "..." }
+  Response: { "repo_id": "<id>", "num_files": 12, "num_chunks": 42, "message": "Created new embeddings" }
 
-GET /health
-  Description: Health check endpoint
-  Response: { "status": "ok" }
+POST /ask
+  Description: Ask a question against an indexed repository
+  Request: { "repo_id": "<id>", "question": "How does authentication work?" }
+  Response: { "answer": "...", "sources": ["path/to/file.py:123"] }
 
-GET /
-  Description: API documentation (Swagger UI)
+GET /docs
+  Description: FastAPI Swagger UI (OpenAPI docs)
+  Response: HTML docs automatically served by FastAPI
 ```
 
 ---
@@ -360,7 +382,7 @@ Understanding RAG:
 
 For issues, questions, or suggestions:
 
-- Open an issue on GitHub
+- Open an issue on � GitHub
 - Check existing issues for solutions
 - Review logs for error details
 - Contact the maintainers
@@ -377,9 +399,3 @@ Built with:
 - Sentence Transformers for efficient embeddings
 - FastAPI for high-performance Python APIs
 - React and Vite for modern frontend development
-
----
-
-**Happy coding! 🚀**
-
-*Last Updated: December 2025*
