@@ -199,7 +199,7 @@ rag/
 
 ```
 POST /load_repo
-  Description: Index a � GitHub repository by cloning and embedding its files
+  Description: Index a  GitHub repository by cloning and embedding its files
   Request: { "repo_url": "https://github.com/user/repo" }
   Response: { "repo_id": "<id>", "num_files": 12, "num_chunks": 42, "message": "Created new embeddings" }
 
