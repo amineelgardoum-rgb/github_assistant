@@ -160,7 +160,9 @@ github_assistant/
 │   ├── api/                      # API layer
 │   │   ├── routers/              # API endpoints
 │   │   │   ├── ask_router.py     # /ask endpoint for Q&A
-│   │   │   └── load_repo_router.py # /load endpoint for indexing
+│   │   │   ├── load_repo_router.py # /load endpoint for indexing
+|   |   |   ├── health_router.py    # health endpoint 
+|   |   |   └── main_router         # endpoint for the /
 │   │   ├── schemas/              # Pydantic validation models
 │   │   │   ├── askRequest.py     # Ask request schema
 │   │   │   └── loadRequest.py    # Load request schema
@@ -262,6 +264,21 @@ The system processes the following file extensions:
 
 ### Backend Endpoints
 
+#### `GET /`
+
+The main route for the API
+```json
+{
+  "content": "This is the llm serving api to react frontend."
+}
+```
+#### `GET /health`
+```json
+{
+  "status": "healthy",
+  "content": "the api is working"
+}
+```
 #### `POST /load_repo`
 
 Index a GitHub repository by cloning and embedding its files.
