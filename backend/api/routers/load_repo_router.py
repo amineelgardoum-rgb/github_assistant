@@ -6,6 +6,13 @@ from api.vector_cache import vector_cache
 router=APIRouter()
 @router.post("/ask")
 def ask_question(req: AskRequest):
+    """ask question endpoint to ask questions about the repo
+    Args:
+        req (AskRequest): the AskRequest is a class to handle properly the /ask
+
+    Returns:
+       json file: {answer:"the answer from the llm",sources:"sources used with the rag chain"}
+    """
     print(f"Received question: {req.question}") # Debug log
     vector_store = vector_cache.get(req.repo_id)
     

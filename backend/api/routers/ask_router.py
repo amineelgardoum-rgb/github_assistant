@@ -6,6 +6,12 @@ from api.vector_cache import vector_cache
 router=APIRouter()
 @router.post("/load_repo")
 def load_repo_endpoint(req: LoadRepoRequest):
+    """A function for the load_repo endpoint /load_repo
+    Args:
+        req (LoadRepoRequest): the loadRepoRequest is a class to handle properly the /load_repo
+    Returns:
+        json file: for the infos about the load endpoint
+    """
     repo_path, repo_id = clone_repo(req.repo_url)
     docs = load_repo_files(repo_path)
     all_splits = split_code_docs(docs)

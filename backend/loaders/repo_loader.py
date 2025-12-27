@@ -8,11 +8,23 @@ from langchain_core.documents import Document
 
 
 def remove_readonly(func, path, excinfo):
+    """ to delete read only files
+    Args:
+        func: The function that raised the error (e.g., os.remove, os.rmdir)
+        path: The path to the file/directory that couldn't be deleted
+        excinfo: Exception information tuple (type, value, traceback)
+    """
     os.chmod(path, stat.S_IWRITE)
     func(path)
 
 
 def repo_id_from_url(url: str) -> str:
+    """ get the repo is from the url of the repo
+    Args:
+        url (str): the url for the github repo (https://gihtub.com/user/repo.git)
+    Returns:
+        str: the id for the repo
+    """
     return hashlib.md5(url.encode()).hexdigest()
 
 
@@ -20,6 +32,13 @@ def repo_id_from_url(url: str) -> str:
 
 
 def clone_repo(repo_url: str, base_dir="data"):
+    """ clone the repo and index it under its repo_id 
+    Args:
+        repo_url (str): the repo url from github
+        base_dir (str, optional): the folder name (optional). Defaults to "data".
+    Returns:
+        repo_path:str,repo_id:str: the repo_path under the data_dir ,and the repo_id generated from the repo_id_from_url function
+    """
     repo_id = repo_id_from_url(repo_url)
     repo_path = os.path.join(base_dir, repo_id)
 
@@ -34,6 +53,14 @@ def clone_repo(repo_url: str, base_dir="data"):
 
 
 def load_repo_files(repo_dir):
+    """_summary_
+
+    Args:
+        repo_dir (str)/path: the path under the repo exists
+    Returns:
+        docs (str)/names of files: the name of files extracted from the repo_dir
+    """
+    # docs is a list for the files extracted from the repo_dir under data_dir
     docs = []
 
     ALLOWED_EXTENSIONS = {

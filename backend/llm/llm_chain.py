@@ -2,13 +2,12 @@ from langchain_google_genai import GoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
 import os
 from dotenv import load_dotenv
-# from pydantic import SecretStr
-# from torch import mode
 
 load_dotenv()  # load .env file
-
-
-llm = GoogleGenerativeAI(model="gemini-2.5-flash",temperature=0)
+api_key = os.getenv("GOOGLE_API_KEY")
+""" The LLM to generate the answers based in a context"""
+llm = GoogleGenerativeAI(model="gemini-2.5-flash", api_key=api_key, temperature=0)
+""" Define The Prompt for the llm generation"""
 prompt = PromptTemplate(
     input_variables=["context", "question"],
     template="""
@@ -32,12 +31,18 @@ User Question:
 {question}
 
 Answer:
-"""
+""",
 )
 
 
-
 def answer_from_docs(docs, question: str):
+    """A helper function to answer from the docs
+    Args:
+        docs (str): the docs cloned from the repository
+        question (str): the user question
+    Returns:
+        str: the answer and the sources generated from the llm retrieving
+    """
     sources = sorted(set(doc.metadata.get("source", "unknown") for doc in docs))
 
     context = "\n\n".join(

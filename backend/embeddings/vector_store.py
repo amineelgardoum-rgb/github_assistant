@@ -4,6 +4,15 @@ from langchain_chroma import Chroma
 
 
 def get_vector_store(documents, repo_id):
+    """get the stored vector (embedding from the chroma db for a fast retrieving process)
+
+    Args:
+        documents (str): the documents from the repo_dir 
+        repo_id (str): the id of the repo which is the repo stored in 
+
+    Returns:
+       vector_store (str): the embedding of the documents vectors
+    """
     persist_dir = f"./chroma_langchain_db/{repo_id}"
 
     embeddings =HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
