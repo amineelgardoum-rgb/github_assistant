@@ -1,4 +1,4 @@
-// ChatPage.jsx with Smart Scrolling, Copy Feature, and Mermaid Support
+// ChatPage.jsx with Robust ID Generation, Smart Scrolling, Copy Feature, and Mermaid Support
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { askQuestion } from "../job/api";
 import ReactMarkdown from "react-markdown";
@@ -25,6 +25,7 @@ function CodeBlock({ children, inline, className }) {
   useEffect(() => {
     if (isMermaid && mermaidRef.current) {
       try {
+        // Reset the container and re-render
         mermaid.contentLoaded();
       } catch (error) {
         console.error('Mermaid rendering error:', error);
@@ -47,49 +48,12 @@ function CodeBlock({ children, inline, className }) {
     return <code className="inline-code">{children}</code>;
   }
 
-  if (isMermaid) {
-    return (
-      <div className="mermaid-wrapper">
-        <button 
-          className="copy-button" 
-          onClick={handleCopy}
-          aria-label="Copy mermaid code"
-        >
-          {copied ? (
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/>
-            </svg>
-          ) : (
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"/>
-              <path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"/>
-            </svg>
-          )}
-          <span>{copied ? 'Copied!' : 'Copy'}</span>
-        </button>
-        <div 
-          ref={mermaidRef} 
-          className="mermaid"
-          style={{ display: 'none' }}
-        >
-          <span ref={codeRef}>{String(children)}</span>
-        </div>
-        <div 
-          ref={mermaidRef}
-          className="mermaid"
-        >
-          {String(children)}
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="code-block-wrapper">
+    <div className={isMermaid ? "mermaid-wrapper" : "code-block-wrapper"}>
       <button 
         className="copy-button" 
         onClick={handleCopy}
-        aria-label="Copy code"
+        aria-label={isMermaid ? "Copy mermaid code" : "Copy code"}
       >
         {copied ? (
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
@@ -103,23 +67,41 @@ function CodeBlock({ children, inline, className }) {
         )}
         <span>{copied ? 'Copied!' : 'Copy'}</span>
       </button>
-      <pre className="code-block">
-        <code ref={codeRef}>{children}</code>
-      </pre>
+
+      {isMermaid ? (
+        <div ref={mermaidRef} className="mermaid">
+          <span ref={codeRef} style={{ display: 'none' }}>{String(children)}</span>
+          {String(children)}
+        </div>
+      ) : (
+        <pre className="code-block">
+          <code ref={codeRef}>{children}</code>
+        </pre>
+      )}
     </div>
   );
 }
 
 export default function ChatPage({ repoId }) {
+  // --- ID GENERATION FIX ---
+  const generateId = useCallback(() => {
+    if (typeof window !== "undefined" && window.crypto && window.crypto.randomUUID) {
+      return window.crypto.randomUUID();
+    }
+    // Fallback for older environments
+    return `msg-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+  }, []);
+
   const [messages, setMessages] = useState([
     { 
-      id: Date.now(),
+      id: "initial-message",
       sender: "bot", 
       text: "Hi! How can I help you with this repo?", 
       sources: [],
       timestamp: new Date()
     },
   ]);
+
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -131,27 +113,19 @@ export default function ChatPage({ repoId }) {
   const messagesContainerRef = useRef(null);
   const scrollTimeoutRef = useRef(null);
 
-  // Check if user is near bottom of chat
   const isNearBottom = useCallback(() => {
     const container = messagesContainerRef.current;
     if (!container) return true;
-    
-    const threshold = 100; // pixels from bottom
+    const threshold = 100;
     const position = container.scrollHeight - container.scrollTop - container.clientHeight;
     return position < threshold;
   }, []);
 
-  // Handle scroll - only disable auto-scroll if user manually scrolls
   const handleScroll = useCallback(() => {
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current);
-    }
+    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
     
-    // Debounce scroll check to avoid interference during auto-scroll
     scrollTimeoutRef.current = setTimeout(() => {
       const nearBottom = isNearBottom();
-      
-      // Only update if user scrolled away from bottom
       if (!nearBottom && !userHasScrolled) {
         setUserHasScrolled(true);
         setAutoScroll(false);
@@ -162,7 +136,6 @@ export default function ChatPage({ repoId }) {
     }, 150);
   }, [isNearBottom, userHasScrolled]);
 
-  // Auto-scroll only if enabled
   useEffect(() => {
     if (autoScroll) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -176,13 +149,10 @@ export default function ChatPage({ repoId }) {
     for (let i = 0; i < words.length; i++) {
       currentText += (i > 0 ? ' ' : '') + words[i];
       setMessages(prev => 
-        prev.map(m => 
-          m.id === messageId 
-            ? { ...m, text: currentText }
-            : m
-        )
+        prev.map(m => m.id === messageId ? { ...m, text: currentText } : m)
       );
-      await new Promise(r => setTimeout(r, 30));
+      // Small delay to simulate streaming
+      await new Promise(r => setTimeout(r, 20));
     }
   }, []);
 
@@ -190,15 +160,17 @@ export default function ChatPage({ repoId }) {
     if (!input.trim() || loading) return;
 
     const userText = input.trim();
-    const userMessageId = Date.now();
-    const botMessageId = Date.now() + 1;
+    const userMessageId = generateId();
+    const botMessageId = generateId();
     
+    // Clear state immediately to prevent duplicate submissions
     setInput("");
     setError(null);
     setLoading(true);
-    setAutoScroll(true); // Re-enable auto-scroll for new message
-    setUserHasScrolled(false); // Reset scroll state
+    setAutoScroll(true);
+    setUserHasScrolled(false);
 
+    // Add user message
     setMessages(prev => [...prev, { 
       id: userMessageId,
       sender: "user", 
@@ -209,6 +181,11 @@ export default function ChatPage({ repoId }) {
     try {
       const data = await askQuestion(repoId, userText);
       
+      const answerText = typeof data.answer === 'string' 
+        ? data.answer 
+        : data.answer?.content || "No response received";
+      
+      // Placeholder for streaming bot response
       setMessages(prev => [...prev, { 
         id: botMessageId,
         sender: "bot", 
@@ -217,12 +194,13 @@ export default function ChatPage({ repoId }) {
         timestamp: new Date()
       }]);
 
-      await streamMessage(data.answer, botMessageId);
+      await streamMessage(answerText, botMessageId);
       
     } catch (err) {
+      console.error("Error getting response:", err);
       setError("Failed to get response. Please try again.");
       setMessages(prev => [...prev, { 
-        id: botMessageId,
+        id: generateId(),
         sender: "bot", 
         text: "❌ Sorry, I encountered an error. Please try again.", 
         sources: [],
@@ -231,7 +209,7 @@ export default function ChatPage({ repoId }) {
       }]);
     } finally {
       setLoading(false);
-      inputRef.current?.focus();
+      setTimeout(() => inputRef.current?.focus(), 0);
     }
   };
 
@@ -242,7 +220,6 @@ export default function ChatPage({ repoId }) {
     }
   };
 
-  // Scroll to bottom button
   const scrollToBottom = () => {
     setAutoScroll(true);
     setUserHasScrolled(false);
@@ -257,7 +234,7 @@ export default function ChatPage({ repoId }) {
             <div className="status-indicator" />
             <h2>Repository Assistant</h2>
           </div>
-          <p className="repo-name">{repoId}</p>
+          <p className="repo-name">Index: {repoId}</p>
         </div>
 
         <div 
@@ -266,7 +243,6 @@ export default function ChatPage({ repoId }) {
           onScroll={handleScroll}
           role="log" 
           aria-live="polite" 
-          aria-atomic="false"
         >
           {messages.map((m) => (
             <div key={m.id} className={`message-row ${m.sender}`}>
@@ -274,9 +250,7 @@ export default function ChatPage({ repoId }) {
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
                   components={{
-                    code: ({ inline, className, children }) => (
-                      <CodeBlock inline={inline} className={className}>{children}</CodeBlock>
-                    ),
+                    code: (props) => <CodeBlock {...props} />,
                     p: ({ children }) => <p className="markdown-p">{children}</p>,
                     ul: ({ children }) => <ul className="markdown-list">{children}</ul>,
                     ol: ({ children }) => <ol className="markdown-list">{children}</ol>,
@@ -290,7 +264,7 @@ export default function ChatPage({ repoId }) {
                     <strong>📁 Sources:</strong>
                     <ul>
                       {m.sources.map((s, idx) => (
-                        <li key={idx}>
+                        <li key={`${m.id}-src-${idx}`}>
                           <code>{s}</code>
                         </li>
                       ))}
@@ -301,7 +275,7 @@ export default function ChatPage({ repoId }) {
             </div>
           ))}
           
-          {loading && (
+          {loading && !messages.find(m => m.id === "loading-state") && (
             <div className="message-row bot">
               <div className="typing-indicator">
                 <span className="dot" />
@@ -314,7 +288,6 @@ export default function ChatPage({ repoId }) {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Scroll to bottom button - shows when not auto-scrolling */}
         {!autoScroll && (
           <button 
             className="scroll-to-bottom"
@@ -344,7 +317,6 @@ export default function ChatPage({ repoId }) {
               placeholder="Ask about the repository..."
               disabled={loading}
               rows={1}
-              aria-label="Message input"
             />
             <button
               className="send-btn"

@@ -33,6 +33,9 @@ The system follows a modern microservices architecture with clear separation of 
 <div align="center">
   <img src="diagram/high_level_architecture.png" alt="Architecture" width="600">
 </div>
+<div align="center">
+  <img src="diagram/architicture.png" alt="Architecture" width="600">
+</div>
 
 ### Key Components
 
@@ -46,15 +49,15 @@ The system follows a modern microservices architecture with clear separation of 
 
 ## 🧩 Tech Stack
 
-| Component                   | Technology           | Purpose                                        |
-| --------------------------- | -------------------- | ---------------------------------------------- |
-| **Frontend**          | ⚛️ React + ⚡ Vite | Modern chat UI with real-time interactions     |
-| **Backend**           | 🚀 FastAPI (Python)  | High-performance REST API for indexing and Q&A |
-| **Vector DB**         | 🗄️ Chroma          | Persistent storage for code embeddings         |
-| **LLM Orchestration** | 🔗 LangChain         | RAG pipeline management and prompting          |
-| **Language Model**    | 🌐 Google Gemini     | Core AI model for generating answers           |
-| **Embedding Model**   | 🧠 all-MiniLM-L6-v2  | Vector representations of code snippets        |
-| **Containerization**  | 🐳 Docker Compose    | Orchestrated multi-container deployment        |
+| Component                   | Technology                             | Purpose                                        |
+| --------------------------- | -------------------------------------- | ---------------------------------------------- |
+| **Frontend**          | ⚛️ React + ⚡ Vite                   | Modern chat UI with real-time interactions     |
+| **Backend**           | 🚀 FastAPI (Python)                    | High-performance REST API for indexing and Q&A |
+| **Vector DB**         | 🗄️ Chroma                            | Persistent storage for code embeddings         |
+| **LLM Orchestration** | 🔗 LangChain                           | RAG pipeline management and prompting          |
+| **Language Model**    | 🌐 Google Gemini(docker)/Ollama(local) | Core AI model for generating answers           |
+| **Embedding Model**   | 🧠 all-MiniLM-L6-v2                    | Vector representations of code snippets        |
+| **Containerization**  | 🐳 Docker Compose                      | Orchestrated multi-container deployment        |
 
 ---
 
@@ -67,6 +70,7 @@ Before you begin, ensure you have the following installed:
 - **Docker & Docker Compose** for containerized deployment
 - **Git** for repository cloning
 - **Google Gemini API Key** ([Get yours here](https://makersuite.google.com/app/apikey))
+- **In host setup** Ollama:llama3:latest
 
 ---
 
@@ -99,7 +103,7 @@ The application will be available at:
 #### Backend Setup
 
 ```bash
-# Navigate to backend directory
+## Navigate to backend directory
 cd backend
 
 # Create virtual environment
@@ -114,6 +118,8 @@ source venv/bin/activate
 # Install dependencies
 pip install -r requirements.txt
 
+# run the ollama server
+ollama serve
 
 # Start backend server
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
@@ -267,18 +273,22 @@ The system processes the following file extensions:
 #### `GET /`
 
 The main route for the API
+
 ```json
 {
   "content": "This is the llm serving api to react frontend."
 }
 ```
+
 #### `GET /health`
+
 ```json
 {
   "status": "healthy",
   "content": "the api is working"
 }
 ```
+
 #### `POST /load_repo`
 
 Index a GitHub repository by cloning and embedding its files.

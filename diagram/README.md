@@ -13,6 +13,9 @@ Visual documentation for the GitHub Codebase Assistant project, including system
 <div align="center">
   <img src="high_level_architecture.png" alt="High Level Architecture" width="700">
 </div>
+<div align="center">
+  <img src="architicture.png" alt="High Level Architecture" width="700">
+</div>
 
 **Description**: Overview of the complete system architecture showing all major components and their interactions.
 

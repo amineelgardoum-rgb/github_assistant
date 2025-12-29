@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from api.routers.ask_router import router as ask_router
 from api.routers.load_repo_router import router as load_router
+from api.routers.ask_router import router as ask_router
 from api.routers.health_router import router as health_router
 from api.routers.main_router import router as main_router
 import uvicorn
@@ -10,7 +10,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:5173"],
     allow_methods=["*"],
     allow_headers=["*"],
 )

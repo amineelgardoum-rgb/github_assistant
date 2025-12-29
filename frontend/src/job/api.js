@@ -4,10 +4,12 @@ const API_URL = "http://localhost:8000";
 
 export const loadRepo = async (repoUrl) => {
   const res = await axios.post(`${API_URL}/load_repo`, { repo_url: repoUrl });
+  console.log(res.data)
   return res.data;
 };
 
 export const askQuestion = async (repoId, question) => {
   const res = await axios.post(`${API_URL}/ask`, { repo_id: repoId, question });
+  console.log(res.data)
   return res.data;
 };

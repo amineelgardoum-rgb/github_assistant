@@ -1,12 +1,28 @@
 from langchain_google_genai import GoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
+from langchain_ollama import ChatOllama
 import os
 from dotenv import load_dotenv
 
 load_dotenv()  # load .env file
 api_key = os.getenv("GOOGLE_API_KEY")
-""" The LLM to generate the answers based in a context"""
-llm = GoogleGenerativeAI(model="gemini-2.5-flash", api_key=api_key, temperature=0)
+llm_provider = os.getenv("llm_provider", "ollama")
+
+# this is for the llm_provider to not exceed
+
+if llm_provider == "ollama":
+    llm = ChatOllama(
+        model="llama3.2:latest",  # Much smaller! 
+        temperature=0.2,
+        num_ctx=2048,  # Smaller context for limited RAM
+    )
+elif llm_provider == "llm_gemini_api":
+    llm = GoogleGenerativeAI(
+        model="gemini-2.5-flash"
+        , api_key=api_key,
+        temperature=0)
+
+
 """ Define The Prompt for the llm generation"""
 prompt = PromptTemplate(
     input_variables=["context", "question"],
@@ -37,7 +53,7 @@ graph TD
 ```
 
 Your answer:
-"""
+""",
 )
 
 

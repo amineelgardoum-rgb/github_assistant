@@ -1,32 +1,42 @@
 from fastapi import APIRouter
-from api.schemas.loadRequest import LoadRepoRequest
-from loaders.repo_loader import clone_repo, load_repo_files, split_code_docs
-from embeddings.vector_store import get_vector_store
+from api.schemas.askRequest import AskRequest
+from llm.llm_chain import answer_from_docs
+from utils.retriever_utils import retrieve_docs
 from api.vector_cache import vector_cache
+
 router=APIRouter()
-@router.post("/load_repo")
-def load_repo_endpoint(req: LoadRepoRequest):
-    """A function for the load_repo endpoint /load_repo
-    Args:
-        req (LoadRepoRequest): the loadRepoRequest is a class to handle properly the /load_repo
-    Returns:
-        json file: for the infos about the load endpoint
-    """
-    repo_path, repo_id = clone_repo(req.repo_url)
-    docs = load_repo_files(repo_path)
-    all_splits = split_code_docs(docs)
+@router.post("/ask")
+def ask_question(req: AskRequest):
+    """Ask question endpoint to ask questions about the repo"""
+    print(f"Received question: {req.question}")
+    vector_store = vector_cache.get(req.repo_id)
+    
+    if not vector_store:
+        return {"error": "Repo not loaded"}
 
-    if repo_id in vector_cache:
-        vector_store = vector_cache[repo_id]
-        msg = "Using cached embeddings"
-    else:
-        vector_store = get_vector_store(all_splits, repo_id)
-        vector_cache[repo_id] = vector_store
-        msg = "Created new embeddings"
-
+    print("Retrieving documents...")
+    retriever = vector_store.as_retriever(search_type="similarity", search_kwargs={"k": 100})
+    docs = retrieve_docs(req.question, retriever)
+    
+    print(f"✅ Retrieved {len(docs)} chunks from documents")
+    # print(f"Using the llm provider:{llm_provider}.")
+    
+    print("Generating answer from LLM...")
+    answer, sources = answer_from_docs(docs, req.question)
+    
+    print(f"📚 Sources used: {len(sources)} unique files")
+    for src in sources:
+        print(f"   - {src}")
+    
+    # ✅ SIMPLEST: Just get the repo_path from metadata (it's already clean)
+    cleaned_sources = []
+    for doc in docs:
+        repo_path = doc.metadata.get('repo_path') or doc.metadata.get('file_name')
+        if repo_path and repo_path not in cleaned_sources:
+            cleaned_sources.append(repo_path)
+    
     return {
-        "repo_id": repo_id,
-        "num_files": len(docs),
-        "num_chunks": len(all_splits),
-        "message": msg
+        "answer": answer,
+        "sources": cleaned_sources,  # Now shows all files!
+        "total_chunks": len(docs)
     }
