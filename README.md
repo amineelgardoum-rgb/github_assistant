@@ -1,4 +1,4 @@
-# 🧠💬 GitHub Codebase Assistant
+# 🧠💬 GitHub Codebase Assistant (gita)
 
 A powerful chat-based AI assistant for deeply understanding and navigating GitHub repositories using Retrieval-Augmented Generation (RAG).
 
