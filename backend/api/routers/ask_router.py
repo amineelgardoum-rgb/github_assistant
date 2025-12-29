@@ -1,8 +1,9 @@
 from fastapi import APIRouter
 from api.schemas.askRequest import AskRequest
-from llm.llm_chain import answer_from_docs
+from llm.llm_chain import answer_from_docs,llm_provider
 from utils.retriever_utils import retrieve_docs
 from api.vector_cache import vector_cache
+
 
 router=APIRouter()
 @router.post("/ask")
@@ -19,7 +20,7 @@ def ask_question(req: AskRequest):
     docs = retrieve_docs(req.question, retriever)
     
     print(f"✅ Retrieved {len(docs)} chunks from documents")
-    # print(f"Using the llm provider:{llm_provider}.")
+    print(f"Using the llm provider:{llm_provider}.")
     
     print("Generating answer from LLM...")
     answer, sources = answer_from_docs(docs, req.question)

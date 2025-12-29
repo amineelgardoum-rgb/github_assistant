@@ -13,6 +13,9 @@ Visual documentation for the GitHub Codebase Assistant project, including system
 <div align="center">
   <img src="high_level_architecture.png" alt="High Level Architecture" width="700">
 </div>
+
+**File**: `architicture.png`
+
 <div align="center">
   <img src="architicture.png" alt="High Level Architecture" width="700">
 </div>
@@ -36,7 +39,7 @@ Visual documentation for the GitHub Codebase Assistant project, including system
 **File**: `rag_pipeline_architecture.png`
 
 <div align="center">
-  <img src="rag_pipeline_architecture.png" alt="RAG Pipeline" width="800">
+  <img src="pipeline_architecture.png" alt="RAG Pipeline" width="800">
 </div>
 
 **Description**: Detailed visualization of the Retrieval-Augmented Generation pipeline from repository ingestion to answer generation.

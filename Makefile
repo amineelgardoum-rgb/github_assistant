@@ -8,3 +8,5 @@ backendLogs:
 	docker compose logs -f backend
 frontendLogs:	
 	docker compose logs -f frontend
+ollamaserve:
+	ollama serve

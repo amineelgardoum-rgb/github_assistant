@@ -2,6 +2,12 @@
 
 A powerful chat-based AI assistant for deeply understanding and navigating GitHub repositories using Retrieval-Augmented Generation (RAG).
 
+# Logo
+
+<div align="center">
+  <img src="diagram/Logo.png" alt="Architecture" width="">
+</div>
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![Node.js 16+](https://img.shields.io/badge/node-16+-green.svg)](https://nodejs.org/)
@@ -9,7 +15,7 @@ A powerful chat-based AI assistant for deeply understanding and navigating GitHu
 
 ---
 
-## 🚀 What This Project Does
+## 🚀 What This Project Does (gita)
 
 This tool allows developers to **ask questions about any codebase** and get reliable, context-aware answers grounded only in the repository's source files. Built on a **Retrieval-Augmented Generation (RAG)** architecture, it eliminates hallucinations and provides high-fidelity technical insights with exact file references.
 
@@ -247,8 +253,8 @@ The system implements a sophisticated Retrieval-Augmented Generation pipeline:
 7. Context Augmentation
    └─> Retrieved chunks combined with original question
    
-8. LLM Generation
-   └─> Gemini generates grounded answer with context
+8. LLM Generation/ollama
+   └─> Gemini/ollama generates grounded answer with context
    
 9. Response Delivery
    └─> Answer with file references and line numbers
@@ -326,6 +332,18 @@ Ask a question about an indexed repository.
 }
 ```
 
+#### `Get /`
+
+main entry route.
+
+**Request:**
+
+```json
+{
+  "content":"The is an llm api"
+}
+```
+
 **Response:**
 
 ```json
@@ -368,9 +386,12 @@ Try asking questions like:
 Create `backend/.env`:
 
 ```env
+# # # # # # this in docker # # # #
 # Google Gemini Configuration
 GOOGLE_API_KEY=your_google_gemini_api_key_here
 MODEL_NAME=gemini-pro
+# # # # # to work in host # # # # 
+# # use ollama # # 
 
 # Embedding Model
 EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
@@ -381,12 +402,12 @@ API_PORT=8000
 DEBUG=false
 
 # Vector Database
-CHROMA_DB_PATH=./chroma_langchain_db
+CHROMA_DB_PATH=./backend/chroma_langchain_db
 
 # Repository Processing
 MAX_FILE_SIZE_MB=10
 CHUNK_SIZE=1000
-CHUNK_OVERLAP=200
+CHUNK_OVERLAP=100
 ```
 
 ---
