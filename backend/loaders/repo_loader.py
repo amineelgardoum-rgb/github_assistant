@@ -33,7 +33,7 @@ def repo_id_from_url(url: str) -> str:
 # ---------- Repo cloning ----------
 
 
-def clone_repo(repo_url: str, base_dir="./backend/data"):
+def clone_repo(repo_url: str, base_dir="./data"):
     """Clone repository and return its path
     Args:
         repo_url (str): GitHub repository URL

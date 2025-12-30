@@ -40,17 +40,9 @@ Guidelines:
 - Use a clear, natural, and conversational tone
 - Be concise but thorough - provide explanations when they add value
 - Format code snippets with proper syntax highlighting using markdown code blocks
-- **When explaining architecture or flows, use Mermaid diagrams** wrapped in ```mermaid code blocks
 - Reference specific files or functions when relevant
 - If the context doesn't contain enough information to answer, say:
   "I don't have enough information in the repository context to answer that question accurately."
-
-Example Mermaid diagram format:
-```mermaid
-graph TD
-    A[Start] --> B[Process]
-    B --> C[End]
-```
 
 Your answer:
 """,

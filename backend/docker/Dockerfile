@@ -12,7 +12,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     -r requirements.txt
 
 COPY . .
-# ENV llm_provider=llm_gemini_api
+ENV llm_provider=llm_gemini_api
 ENV port=8000
 ENV ENV=production
 ENV HOST=0.0.0.0

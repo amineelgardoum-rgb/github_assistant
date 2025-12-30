@@ -13,7 +13,7 @@ def get_vector_store(documents, repo_id):
     Returns:
        vector_store (str): the embedding of the documents vectors
     """
-    persist_dir = f"./backend/chroma_langchain_db/{repo_id}"
+    persist_dir = f"./chroma_langchain_db/{repo_id}"
 
     embeddings =HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
