@@ -1,0 +1,22 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+# Web API
+fastapi
+uvicorn
+python-dotenv
+GitPython
+
+# AI & RAG
+langchain
+langchain-openai
+langchain-chroma
+langchain-community
+langgraph
+google-genai
+sentence-transformers
+langchain-huggingface
+langchain-google-genai
+langchain-ollama
+
+# The "Heavy" dependencies
+torch==2.4.0+cpu
