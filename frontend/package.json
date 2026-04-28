@@ -6,7 +6,7 @@
   "dependencies": {
     "axios": "^1.13.2",
     "lucide-react": "^0.562.0",
-    "mermaid": "^11.12.2",
+    "mermaid": "^9.1.7",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-markdown": "^10.1.0",
